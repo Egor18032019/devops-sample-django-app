@@ -12,12 +12,12 @@ services:
     depends_on:
       - db
     environment:
-      - DJANGO_DB_HOST=db
-      - DJANGO_DB_NAME=app
-      - DJANGO_DB_USER=worker
-      - DJANGO_DB_PASS=worker
-      - DJANGO_DB_PORT=5432
-      - DJANGO_DEBUG=False
+      - DJANGO_DB_HOST=${DJANGO_DB_HOST}
+      - DJANGO_DB_NAME=${DJANGO_DB_NAME}
+      - DJANGO_DB_USER=${DJANGO_DB_USER}
+      - DJANGO_DB_PASS=${DJANGO_DB_PASS}
+      - DJANGO_DB_PORT=${DJANGO_DB_PORT}
+      - DJANGO_DEBUG=${DJANGO_DB_USER}
     command: [ "bash", "-c", "python manage.py migrate && uwsgi --ini uwsgi.ini"]
     networks:
       - app
@@ -28,9 +28,9 @@ services:
     container_name: db
     # переменные окружения для БД
     environment:
-      - POSTGRES_DB=app
-      - POSTGRES_USER=worker
-      - POSTGRES_PASSWORD=worker
+      - POSTGRES_DB==${DJANGO_DB_NAME}
+      - POSTGRES_USER=${DJANGO_DB_USER}
+      - POSTGRES_PASSWORD=${DJANGO_DB_PASS}
     volumes:
       - ./data/postgresql:/var/lib/postgresql/data
     expose:
