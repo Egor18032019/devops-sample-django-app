@@ -1,31 +1,26 @@
-version: '3'
+version: '3.9'
 
-# основной раздел, в котором создаются и описываются сервисы
 services:
-  # наименование сервиса-клиентская часть приложения
-  application:
-    # указание на необходимость сборки из Dockerfile
+  app:
     build:
-      # путь, где нужно искать Dockerfile относительно того, где находится compose-файл
       context: .
       dockerfile: Dockerfile
-    # связывается порт 8080 локального компьютера и порт 80 контейнера
     ports:
-      - 8080:8000
-    # контейнер привязывается к сети django_app_network
+      - "8000:8000"
     volumes:
-      - ./media/images/uploads:/srv/www/app/media/images
-    environment:
-      - DJANGO_DB_HOST= db
-      - DJANGO_DB_NAME= app
-      - DJANGO_DB_USER= worker
-      - DJANGO_DB_PASS= worker
-      - DJANGO_DB_PORT= "5432"
-      - DJANGO_DEBUG="False"
+      - ./media/images/uploads:/app/media/images/uploads
     depends_on:
       - db
+    environment:
+      - DJANGO_DB_HOST=db
+      - DJANGO_DB_NAME=app
+      - DJANGO_DB_USER=worker
+      - DJANGO_DB_PASS=worker
+      - DJANGO_DB_PORT=5432
+      - DJANGO_DEBUG=False
+    command: [ "bash", "-c", "python manage.py migrate && uwsgi --ini uwsgi.ini"]
     networks:
-      - django_app_network
+      - app
 
   db:
     # образ, используемый для контейнера
@@ -38,12 +33,11 @@ services:
       - POSTGRES_PASSWORD=worker
     volumes:
       - ./data/postgresql:/var/lib/postgresql/data
-    ports:
-      - 8081:5432
-    # контейнер привязывается к сети test
+    expose:
+      - 5432
     networks:
-      - django_app_network
+        - app
 
-# применяемые сети
 networks:
-  django_app_network:
+  app:
+    driver: bridge
