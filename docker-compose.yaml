@@ -1,0 +1,49 @@
+version: '3'
+
+# основной раздел, в котором создаются и описываются сервисы
+services:
+  # наименование сервиса-клиентская часть приложения
+  application:
+    # указание на необходимость сборки из Dockerfile
+    build:
+      # путь, где нужно искать Dockerfile относительно того, где находится compose-файл
+      context: .
+      dockerfile: Dockerfile
+    # связывается порт 8080 локального компьютера и порт 80 контейнера
+    ports:
+      - 8080:8000
+    # контейнер привязывается к сети django_app_network
+    volumes:
+      - ./media/images/uploads:/srv/www/app/media/images
+    environment:
+      - DJANGO_DB_HOST= db
+      - DJANGO_DB_NAME= app
+      - DJANGO_DB_USER= worker
+      - DJANGO_DB_PASS= worker
+      - DJANGO_DB_PORT= "5432"
+      - DJANGO_DEBUG="False"
+    depends_on:
+      - db
+    networks:
+      - django_app_network
+
+  db:
+    # образ, используемый для контейнера
+    image: postgres:14-alpine
+    container_name: db
+    # переменные окружения для БД
+    environment:
+      - POSTGRES_DB=app
+      - POSTGRES_USER=worker
+      - POSTGRES_PASSWORD=worker
+    volumes:
+      - ./data/postgresql:/var/lib/postgresql/data
+    ports:
+      - 8081:5432
+    # контейнер привязывается к сети test
+    networks:
+      - django_app_network
+
+# применяемые сети
+networks:
+  django_app_network:
