@@ -8,10 +8,8 @@ WORKDIR /app
 
 # копируем всё
 COPY . /app/.
-RUN ls -1
-RUN pip install uwsgi
 
-COPY uwsgi.ini ./uwsgi.ini
+RUN pip install uwsgi
 
 
 RUN set -ex \
