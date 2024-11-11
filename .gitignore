@@ -2,8 +2,8 @@ db.sqlite3
 .compose/db/*
 .compose/web/*
 .idea
-.env
 data
 media/uploads/*
-
+.venv
+.data
 

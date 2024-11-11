@@ -10,3 +10,6 @@ cp .env.example .env
 docker-compose up
 ```
 перейти на http://localhost:8000/
+
+ 
+egor140512
