@@ -9,3 +9,4 @@ cp .env.example .env
 ```shell
 docker-compose up
 ```
+перейти на http://localhost:8000/

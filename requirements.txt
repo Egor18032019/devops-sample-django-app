@@ -1,5 +1,5 @@
 django==4.0.1
-Pillow==9.0.0
-psycopg2-binary==2.9.3
+Pillow
+psycopg2-binary
 django-prometheus==2.2.0
 uwsgi
